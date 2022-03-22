@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for article in articles %}
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ article.author.profile.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ article.author }}</a>
+              <small class="text-muted">{{ article.date_posted|date:"F d, Y, P"}}</small>
+            </div>
+            <h2><a class="article-title" href="{% url 'post-detail' article.id %}">{{ article.title }}</a></h2>
+            <p class="article-content">{{ article.content }}</p>
+            <hr>
+            <img class="account-img1" src="{{ article.image.url }}">
+            <br><br>
+            </div>
+        </article>
+    {% endfor %}
+
+    <!-- {% for cmt in comment %}
+        {{ cmt.cmt_post }} <br>
+        {{ cmt.cmt_user }}
+        {{ cmt.comment }}
+    {% endfor %} -->
+{% endblock content %}

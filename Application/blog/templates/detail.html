@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ object.author }}</a>
+              <small class="text-muted">{{ object.date_posted|date:"F d, Y, P"}}</small>
+              {% if object.author == user %}
+                <a href="{% url 'post-update' object.id %}" class="btn btn-primary btn-sm mt-1 mb-1">Update</a>
+                <a href="{% url 'post-delete' object.id %}" class="btn btn-danger btn-sm mt-1 mb-1">Delete</a>
+
+            {% endif %}
+            </div>
+            <h2 class="article-title">{{object.title}}</h2>
+            <p class="article-content">{{ object.content }}</p>
+            <hr>
+            <img class="account-img1" src="{{ object.image.url }}">
+            <br><br>
+          
+            {% if user.is_authenticated %}
+
+
+            <h3>Comment Here</h3>
+            <form method="POST" id="comment-form" novalidate>
+              {% csrf_token %}
+              <div class="input-group mb-3">
+                <input type="text" class="form-control col-lg-9" placeholder="" aria-label="" aria-describedby="basic-addon1" name="comment" required>
+              <div class="input-group-prepend">
+                <input type="submit" value="Comment" class="btn btn-success mb-0.9">
+                </div>
+              </div>
+              <h4><u>List of Comments</u></h4>
+            </form>
+            
+            
+            {% for c in object.comment_set.all %}
+            
+            <hr>
+             <b>{{c.cmt_user}}:</b> 
+              {{c.comment}}
+              <hr>
+            {% endfor %}
+
+            {% else %}
+            <div class="input-group mb-3">
+              <input type="text" class="form-control col-lg-9" required>
+            <div class="input-group-prepend">
+              <a href="{% url 'register' %}"><input type="submit" value="Comment" class="btn btn-success mb-0.9"></a>
+              </div>
+            </div>
+              <h4>Register and Login to comment</h4>
+
+              {% for c in object.comment_set.all %}
+            
+            <hr>
+             <b>{{c.cmt_user}}:</b> 
+              {{c.comment}}
+              <hr>
+            {% endfor %}
+
+            {% endif %}
+
+
+
+
+
+            
+
+            
+
+
+          </div>
+        </article>
+
+
+        <script>
+
+      $('#comment-form').on('submit', function(e){
+            e.preventDefault();
+            let formData = new FormData(this);  
+            const postId = "{{object.id}}";
+            const commentUrl = "{% url 'blog_comment' 11 %}".replace(11, postId );
+
+            for(let v of formData.entries()){
+                console.log(v[0], v[1])
+            }
+
+            $.ajax({
+                url: commentUrl,
+                method:'POST',
+                data: formData,
+                processData:false,
+                contentType: false,
+                
+                success: function(resp){
+                    $('#comment-form')[0].reset();
+                    console.log(resp);
+                    if(resp.status == 200){
+                        let instance = resp.instance;
+                        console.log(instance)
+                        let r = `<p><b>${instance.user}</b><br>${instance.comment}</p>`;
+                        $('#comment-form').append(r);
+                    }else{
+                        alert(resp.errors[0][1]);
+                    }
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+         })
+
+
+        </script>
+{% endblock content %}
