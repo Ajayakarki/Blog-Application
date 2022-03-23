@@ -15,7 +15,7 @@
 <br><img src="images/1.JPG">  <img src="images/2.JPG"> </br>
 
 <h3>After Login</h3>
-<br><img src="images/1.JPG">  <img src="images/2.JPG"> </br>
+<br><img src="images/3.JPG">
 
 
 
